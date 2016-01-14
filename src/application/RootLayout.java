@@ -22,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -35,13 +36,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class RootLayout extends AnchorPane{
-
+	public static String input_text;
 	@FXML SplitPane base_pane;
 	@FXML AnchorPane right_pane;
 	@FXML VBox left_pane;
+	@FXML private TextField text_field_add;
 
 	private DragIcon mDragOverIcon = null;
-
+	public int length = 9;
 	private EventHandler<DragEvent> mIconDragOverRoot = null;
 	private EventHandler<DragEvent> mIconDragDropped = null;
 	private EventHandler<DragEvent> mIconDragOverRightPane = null;
@@ -60,9 +62,33 @@ public class RootLayout extends AnchorPane{
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+
+
 	}
 
 
+	@FXML
+	private void handleSubmitButtonAction(ActionEvent event) {
+        input_text = text_field_add.getText();
+        System.out.print(input_text);
+        mDragOverIcon = new DragIcon();
+
+		mDragOverIcon.setVisible(false);
+		mDragOverIcon.setOpacity(0.65);
+		getChildren().add(mDragOverIcon);
+
+
+		DragIcon icn = new DragIcon();
+
+		addDragDetection(icn);
+
+		icn.setType(DragIconType.values()[length]);
+
+		left_pane.getChildren().add(icn);
+
+		buildDragHandlers();
+		length++;
+    }
 
 	@FXML
 	private void handleButtonAction() {
@@ -186,7 +212,7 @@ public class RootLayout extends AnchorPane{
 			fxmlLoader.load();
 			Parent root1 = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
-			stage.setScene(new Scene(root1));  
+			stage.setScene(new Scene(root1));
 			stage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
